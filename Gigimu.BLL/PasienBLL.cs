@@ -29,7 +29,20 @@ namespace Gigimu.BLL
 
         public IEnumerable<PasienDTO> GetAll()
         {
-            throw new NotImplementedException();
+            List<PasienDTO> listPasienDto = new List<PasienDTO>();
+            var pasiens = pasienDAL.GetAll();
+            foreach (var pasien in pasiens)
+            {
+                listPasienDto.Add(new PasienDTO
+                {
+                    PasienID = pasien.PasienID,
+                    Alamat = pasien.Alamat,
+                    Email = pasien.Email,
+                    Nama = pasien.Nama,
+                    Telepon = pasien.Telepon,
+                });
+            }
+            return listPasienDto;
         }
 
         public PasienDTO GetById(int id)
@@ -54,6 +67,21 @@ namespace Gigimu.BLL
         public PasienDTO GetByUsername(string username)
         {
             throw new NotImplementedException();
+        }
+
+        public IEnumerable<PasienDTO> GetKonsultasiPasienByDokter(int dokterId)
+        {
+            List<PasienDTO> pasiens = new List<PasienDTO>();
+            var pasienFromDAL = pasienDAL.GetKonsultasiPasienByDokter(dokterId);
+            foreach ( var pasien in pasienFromDAL)
+            {
+                pasiens.Add(new PasienDTO
+                {
+                    PasienID = pasien.PasienID,
+                    Nama = pasien.Nama,
+                });
+            }
+            return pasiens;
         }
 
         public void Insert(AddPasienDTO entity)

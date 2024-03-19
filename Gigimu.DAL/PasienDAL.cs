@@ -13,8 +13,9 @@ namespace Gigimu.DAL
     {
         private string GetConnectionString()
         {
+            return Helper.GetConnectionString();
             //return @"Data Source=ACTUAL;Initial Catalog=LatihanDb;Integrated Security=True;TrustServerCertificate=True";
-            return ConfigurationManager.ConnectionStrings["MyDbConnectionString"].ConnectionString;
+            //return ConfigurationManager.ConnectionStrings["MyDbConnectionString"].ConnectionString;
         }
         public void Delete(Pasien entity)
         {
@@ -25,7 +26,7 @@ namespace Gigimu.DAL
         {
             using (SqlConnection conn = new SqlConnection(GetConnectionString()))
             {
-                var strSql = @"select * from Pasien";
+                var strSql = @"select * from Pasien order by Nama";
                 var results = conn.Query<Pasien>(strSql);
                 return results;
             }
@@ -119,6 +120,36 @@ namespace Gigimu.DAL
                 {
                     throw new Exception(ex.Message);
                 }
+            }
+        }
+
+        public IEnumerable<Pasien> GetKonsultasiPasienByDokter(int dokterId)
+        {
+            using (SqlConnection conn = new SqlConnection(GetConnectionString()))
+            {
+                List<Pasien> pasiens = new List<Pasien>();
+                var strSql = @"select distinct  p.PasienID, p.Nama as NamaPasien from Konsultasi as k
+                            join Pasien as p on p.PasienID = k.PasienID
+                            join Dokter as d on d.DokterID = k.DokterID where k.DokterID=@DokterID";
+                SqlCommand cmd = new SqlCommand(strSql, conn);
+                cmd.Parameters.AddWithValue("@DokterID",dokterId);
+                conn.Open();
+                SqlDataReader dr = cmd.ExecuteReader();
+
+                if (dr.HasRows)
+                {
+                    while (dr.Read())
+                    {
+                        var pasien = new Pasien()
+                        {
+                            PasienID = Convert.ToInt32(dr["PasienID"]),
+                            Nama = dr["NamaPasien"].ToString(),
+
+                        };
+                        pasiens.Add(pasien);
+                    }
+                }
+                return pasiens;
             }
         }
     }

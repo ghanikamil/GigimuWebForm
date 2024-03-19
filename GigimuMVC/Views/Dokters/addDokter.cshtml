@@ -1,0 +1,88 @@
+﻿@model IEnumerable<GigimuDTO.DokterDTO>
+
+@{
+    ViewData["Title"] = "addDokter";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <!-- Basic Card Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Dokter List Page</h6>
+            </div>
+            <div class="card-body">
+                <a class="btn btn-success btn-sm" href="#" data-toggle="modal" data-target="#addDokterModal">
+                    Add Dokter
+                </a><br /><br />
+                <table class="table table-striped">
+                    <tr>
+                        <th>DokterID</th>
+                        <th>Dokter Name</th>
+                        <th>Spesialis</th>
+                        <th>Email</th>
+                    </tr>
+                    @foreach (var dokter in Model)
+                    {
+                        <tr>
+                            <td>@dokter.DokterID</td>
+                            <td>@dokter.Nama</td>
+                            <td>@dokter.Spesialis</td>
+                            <td>@dokter.Email</td>
+                        </tr>
+                    }
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<div class="modal fade" id="addDokterModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Data Dokter Baru</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="/Dokters/addDokter">
+                    <div class="form-group">
+                        <label for="Nama">Nama :</label>
+                        <input type="text" id="Nama" class="form-control" name="Nama"
+                               placeholder="Nama Dokter" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Spesialis">Spesialis :</label>
+                        <select id="Spesialis" name="Spesialis" class="form-control">
+                            <option class="dropdown-item-text" value="Umum">Umum</option>
+                            <option class="dropdown-item-text" value="Spesialis Ortodonti (SpOrt)">Spesialis Ortodonti (SpOrt)</option>
+                            <option class="dropdown-item-text" value="Spesialis Periodonsia (SpPerio)">Spesialis Periodonsia (SpPerio)</option>
+                            <option class="dropdown-item-text" value="Spesialis Konservasi Gigi (SpKG)">Spesialis Konservasi Gigi (SpKG)</option>
+                            <option class="dropdown-item-text" value="Spesialis Bedah Mulut (SpBM)">Spesialis Bedah Mulut (SpBM)</option>
+                            <option class="dropdown-item-text" value="Spesialis Prostodonsia (SpPros)">Spesialis Prostodonsia (SpPros)</option>
+                            <option class="dropdown-item-text" value="Spesialis Kedokteran Gigi Anak (SpKGA)">Spesialis Kedokteran Gigi Anak (SpKGA)</option>
+                            <option class="dropdown-item-text" value="Spesialis Penyakit Mulut (SpPM)">Spesialis Penyakit Mulut (SpPM)</option>
+                            <option class="dropdown-item-text" value="Spesialis Radiologi Kedokteran Gigi (SpRKG)">Spesialis Radiologi Kedokteran Gigi (SpRKG)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Email">Email :</label>
+                        <input type="text" id="Email" class="form-control" name="Email"
+                               placeholder="Email" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Password">Password :</label>
+                        <input type="password" id="Password" class="form-control" name="Password"
+                               placeholder="Password" />
+                    </div>
+                    <input type="Submit" value="Add" class="btn btn-success btn-sm" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -14,8 +14,9 @@ namespace Gigimu.DAL
     {
         private string GetConnectionString()
         {
+            return Helper.GetConnectionString();
             //return @"Data Source=ACTUAL;Initial Catalog=LatihanDb;Integrated Security=True;TrustServerCertificate=True";
-            return ConfigurationManager.ConnectionStrings["MyDbConnectionString"].ConnectionString;
+            //return ConfigurationManager.ConnectionStrings["MyDbConnectionString"].ConnectionString;
         }
         public void Delete(Dokter entity)
         {
@@ -59,9 +60,9 @@ namespace Gigimu.DAL
             using (SqlConnection conn = new SqlConnection(GetConnectionString()))
             {
                 var strSql = "addDokter";
-                var param = new 
-                { 
-                    Nama = entity.Nama, 
+                var param = new
+                {
+                    Nama = entity.Nama,
                     Spesialis = entity.Spesialis,
                     Email = entity.Email,
                     Password = entity.Password
@@ -88,6 +89,64 @@ namespace Gigimu.DAL
         public void Update(Dokter entity)
         {
             throw new NotImplementedException();
+        }
+
+        public Dokter Login(string email, string password)
+        {
+            using (SqlConnection conn = new SqlConnection(GetConnectionString()))
+            {
+                var strSql = "LoginDokter";
+                var param = new { Email = email, Password = password };
+                var result = conn.QueryFirstOrDefault<Dokter>(strSql, param, commandType: System.Data.CommandType.StoredProcedure);
+                if (result == null)
+                {
+                    throw new ArgumentException("Username atau Password salah");
+                }
+
+                var strSqlRole = @"select r.* from UserRole ur
+                                    join Role r on ur.RoleID = r.RoleID
+                                    join Dokter d on ur.DokterID = d.DokterID
+                                    where d.Email = @Email";
+                var roles = conn.Query<Role>(strSqlRole, param);
+                result.Roles = roles;
+
+                return result;
+            }
+        }
+
+        public void AddUserToRole(int dokterId, int roleId)
+        {
+            using (SqlConnection conn = new SqlConnection(GetConnectionString()))
+            {
+                string strSql = @"insert into UserRole(DokterID, RoleID) values(@DokterID, @RoleID)";
+                var param = new { DokterID = dokterId, RoleID = roleId };
+                try
+                {
+                    int result = conn.Execute(strSql, param);
+                    if (result != 1)
+                    {
+                        throw new Exception("Data tidak berhasil ditambahkan");
+                    }
+                }
+                catch (SqlException sqlEx)
+                {
+                    throw new ArgumentException($"{sqlEx.InnerException.Message} - {sqlEx.Number}");
+                }
+                catch (Exception ex)
+                {
+                    throw new ArgumentException("Kesalahan: " + ex.Message);
+                }
+            }
+        }
+
+        public IEnumerable<Role> GetAllRoles()
+        {
+            using (SqlConnection conn = new SqlConnection(GetConnectionString()))
+            {
+                var strSql = @"select * from Role order by RoleName desc";
+                var results = conn.Query<Role>(strSql);
+                return results;
+            }
         }
     }
 }

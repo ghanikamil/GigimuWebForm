@@ -17,6 +17,19 @@ namespace Gigimu.BLL
         {
             _dokterDAL = new DokterDAL();
         }
+
+        public void AddUserToRole(int dokterId, int roleId)
+        {
+            try
+            {
+                _dokterDAL.AddUserToRole(dokterId, roleId);
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+        }
+
         public void Delete(int id)
         {
             throw new NotImplementedException();
@@ -39,6 +52,21 @@ namespace Gigimu.BLL
                 });
             }
             return listDokterDto;
+        }
+
+        public IEnumerable<RoleDTO> GetAllRoles()
+        {
+            var results = _dokterDAL.GetAllRoles();
+            var resultsDTO = new List<RoleDTO>();
+            foreach (var item in results)
+            {
+                resultsDTO.Add(new RoleDTO
+                {
+                    RoleID = item.RoleID,
+                    RoleName = item.RoleName
+                });
+            }
+            return resultsDTO;
         }
 
         public DokterDTO GetById(int id)
@@ -101,6 +129,54 @@ namespace Gigimu.BLL
                     Password = entty.Password
                 };
                 _dokterDAL.Insert(newDokter);
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+        }
+
+        public DokterDTO LoginMVC(LoginDokterDTO loginDokterDTO)
+        {
+            if (string.IsNullOrEmpty(loginDokterDTO.Email))
+            {
+                throw new ArgumentException("Email is required");
+            }
+            if (string.IsNullOrEmpty(loginDokterDTO.Password))
+            {
+                throw new ArgumentException("Password is required");
+            }
+            try
+            {
+                var result = _dokterDAL.Login(loginDokterDTO.Email,loginDokterDTO.Password);
+                if (result == null)
+                {
+                    throw new ArgumentException("Username or Password is wrong");
+                }
+
+                var lstRolesDto = new List<RoleDTO>();
+                var roles = result.Roles;
+                foreach (var role in roles)
+                {
+                    lstRolesDto.Add(new RoleDTO
+                    {
+                        RoleID = role.RoleID,
+                        RoleName = role.RoleName
+                    });
+                }
+                DokterDTO dokterDTO = new DokterDTO
+                {
+                    DokterID = result.DokterID,
+                    Email = result.Email,
+                    Password = result.Password,
+                    Nama = result.Nama,
+                    Spesialis = result.Spesialis,
+                    IsSpesialis = result.IsSpesialis,
+                    Roles = lstRolesDto
+                };
+
+                return dokterDTO;
+
             }
             catch (Exception ex)
             {

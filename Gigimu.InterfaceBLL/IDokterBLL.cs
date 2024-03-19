@@ -13,5 +13,8 @@ namespace Gigimu.InterfaceBLL
         IEnumerable<DokterDTO> GetByName(string name);
         void Insert(AddDokterDTO entty);
         void Update(AddDokterDTO entty);
+        DokterDTO LoginMVC(LoginDokterDTO loginDokterDTO);
+        void AddUserToRole(int dokterId, int roleId);
+        IEnumerable<RoleDTO> GetAllRoles();
     }
 }

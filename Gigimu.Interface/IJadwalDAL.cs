@@ -9,5 +9,6 @@ namespace Gigimu.Interface
     {
         IEnumerable<Jadwal> GetJadwalWithDokter();
         IEnumerable<Jadwal> GetJadwalByDokter(int dokterId);
+        void DeteteByID(int id);
     }
 }

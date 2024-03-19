@@ -1,0 +1,83 @@
+﻿@model GigimuMVC.Models.JadwalWithDokter
+
+@{
+    ViewData["Title"] = "addJadwal";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <!-- Basic Card Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Dokter List Page</h6>
+            </div>
+            <div class="card-body">
+                <a class="btn btn-success btn-sm" href="#" data-toggle="modal" data-target="#addJadwalModal">
+                    Add Jadwal
+                </a><br /><br />
+                <table class="table table-striped">
+                    <tr>
+                        <th>jadwalID</th>
+                        <th>tanggal</th>
+                        <th>nama dokter</th>
+                        <th>spesialis</th>
+                        <th>pasien terdaftar</th>
+                        <th>max orang</th>
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                    @foreach (var jadwal in Model.Jadwals)
+                    {
+                        <tr>
+                            <td>@jadwal.JadwalDokterID</td>
+                            <td>@jadwal.Tanggal.ToString("dd-MM-yyyy")</td>
+                            <td>@jadwal.Dokter.Nama</td>
+                            <td>@jadwal.Dokter.Spesialis</td>
+                            <td>@jadwal.PasienTerdaftar</td>
+                            <td>@jadwal.MaxOrang</td>
+                            <td>
+                                <a asp-action="editJadwal" asp-route-id="@jadwal.JadwalDokterID" class="btn btn-warning btn-sm">edit</a>
+                            </td>
+                            <td>
+                                <a asp-action="deleteJadwal" asp-route-id="@jadwal.JadwalDokterID" class="btn btn-danger btn-sm">delete</a>
+                            </td>
+                        </tr>
+                    }
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="modal fade" id="addJadwalModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Data Dokter Baru</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="/Dokters/addJadwal">
+                    <div class="form-group">
+                        <label for="Tanggal">Tanggal:</label>
+                        <input type="date" id="Tanggal" class="form-control" name="Tanggal" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@Model.DokterID">Nama Dokter</label>
+                        <select class="form-control" asp-for="@Model.DokterID"
+                                asp-items="@Model.Dokters">
+                        </select>&nbsp;
+                    </div>
+                    <input type="Submit" value="Add" class="btn btn-success btn-sm" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -15,5 +15,6 @@ namespace Gigimu.InterfaceBLL
         PasienDTO Login(string email, string password);
         void Insert(AddPasienDTO entity);
         void Update(UpdateProfilePasienDTO entity);
+        IEnumerable<PasienDTO> GetKonsultasiPasienByDokter(int dokterId);
     }
 }
