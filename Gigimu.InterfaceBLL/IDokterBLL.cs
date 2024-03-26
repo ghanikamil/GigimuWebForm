@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using GigimuDTO;
 
 namespace Gigimu.InterfaceBLL
@@ -16,5 +17,6 @@ namespace Gigimu.InterfaceBLL
         DokterDTO LoginMVC(LoginDokterDTO loginDokterDTO);
         void AddUserToRole(int dokterId, int roleId);
         IEnumerable<RoleDTO> GetAllRoles();
+        Task<IEnumerable<DokterDTO>> GetAllAsync();
     }
 }

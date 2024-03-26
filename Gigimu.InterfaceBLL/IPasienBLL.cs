@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Gigimu.InterfaceBLL
 {
@@ -16,5 +17,8 @@ namespace Gigimu.InterfaceBLL
         void Insert(AddPasienDTO entity);
         void Update(UpdateProfilePasienDTO entity);
         IEnumerable<PasienDTO> GetKonsultasiPasienByDokter(int dokterId);
+        Task<PasienDTO> LoginAsync(string email, string password);
+        Task InsertAsync(AddPasienDTO entity);
+        Task UpdateAsync(UpdateProfilePasienDTO entity);
     }
 }

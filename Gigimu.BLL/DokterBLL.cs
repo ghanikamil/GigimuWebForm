@@ -6,6 +6,7 @@ using GigimuDTO;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using static Dapper.SqlMapper;
 
 namespace Gigimu.BLL
@@ -40,6 +41,25 @@ namespace Gigimu.BLL
             List<DokterDTO> listDokterDto = new List<DokterDTO>();
             var dokters = _dokterDAL.GetAll();
             foreach ( var dokter in dokters)
+            {
+                listDokterDto.Add(new DokterDTO
+                {
+                    DokterID = dokter.DokterID,
+                    Nama = dokter.Nama,
+                    Spesialis = dokter.Spesialis,
+                    Email = dokter.Email,
+                    Password = dokter.Password,
+                    IsSpesialis = dokter.IsSpesialis
+                });
+            }
+            return listDokterDto;
+        }
+
+        public async Task<IEnumerable<DokterDTO>> GetAllAsync()
+        {
+            List<DokterDTO> listDokterDto = new List<DokterDTO>();
+            var dokters = _dokterDAL.GetAll();
+            foreach (var dokter in dokters)
             {
                 listDokterDto.Add(new DokterDTO
                 {

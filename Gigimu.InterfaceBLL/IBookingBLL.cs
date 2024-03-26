@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Gigimu.InterfaceBLL
 {
@@ -10,5 +11,8 @@ namespace Gigimu.InterfaceBLL
         IEnumerable<BookingDTO> GetBookingByPasien(int pasienId);
         void Insert(AddBookingDTO entity);
         void Delete(int pasienId);
+        Task<IEnumerable<BookingDTO>> GetBookingByPasienAsync(int pasienId);
+        Task InsertAsync(AddBookingDTO entity);
+        Task DeleteAsync(int bookingId);
     }
 }

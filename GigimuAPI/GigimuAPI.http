@@ -1,0 +1,6 @@
+@GigimuAPI_HostAddress = http://localhost:5049
+
+GET {{GigimuAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Gigimu.BLL
 {
@@ -73,7 +74,7 @@ namespace Gigimu.BLL
         {
             List<PasienDTO> pasiens = new List<PasienDTO>();
             var pasienFromDAL = pasienDAL.GetKonsultasiPasienByDokter(dokterId);
-            foreach ( var pasien in pasienFromDAL)
+            foreach (var pasien in pasienFromDAL)
             {
                 pasiens.Add(new PasienDTO
                 {
@@ -141,6 +142,38 @@ namespace Gigimu.BLL
             }
         }
 
+        public async Task InsertAsync(AddPasienDTO entity)
+        {
+            string trimmedTelepon = entity.Telepon.Trim();
+
+            // Check if Telepon contains only numeric characters
+            if (!trimmedTelepon.All(char.IsDigit))
+            {
+                throw new ArgumentException("Telepon must contain only numeric characters");
+            }
+            try
+            {
+                var newPasien = new Pasien
+                {
+                    Nama = entity.Nama,
+                    Alamat = entity.Alamat,
+                    Email = entity.Email,
+                    Telepon = trimmedTelepon,
+                    Password = entity.Password,
+                };
+                pasienDAL.Insert(newPasien);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("2627"))
+                {
+                    throw new ArgumentException("Username already exists");
+                }
+
+                throw new ArgumentException(ex.Message);
+            }
+        }
+
         public PasienDTO Login(string email, string password)
         {
             if (string.IsNullOrEmpty(email))
@@ -175,7 +208,52 @@ namespace Gigimu.BLL
             }
         }
 
+        public async Task<PasienDTO> LoginAsync(string email, string password)
+        {
+            try
+            {
+                var result = pasienDAL.Login(email, password);
+                if (result == null)
+                {
+                    throw new ArgumentException("email or password is wrong");
+                }
+                PasienDTO pasienDTO = new PasienDTO
+                {
+                    PasienID = result.PasienID,
+                    Nama = result.Nama,
+                    Alamat = result.Alamat,
+                    Telepon = result.Telepon,
+                    Email = result.Email
+                };
+                return pasienDTO;
+            }
+            catch (Exception ex)
+            {
+
+                throw new ArgumentException(ex.Message);
+            }
+        }
+
         public void Update(UpdateProfilePasienDTO entity)
+        {
+            try
+            {
+                var updatePasien = new Pasien
+                {
+                    PasienID = entity.PasienID,
+                    Nama = entity.Nama,
+                    Alamat = entity.Alamat,
+                    Telepon = entity.Telepon,
+                };
+                pasienDAL.Update(updatePasien);
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+        }
+
+        public async Task UpdateAsync(UpdateProfilePasienDTO entity)
         {
             try
             {
